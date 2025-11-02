@@ -1,0 +1,58 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- develop
+
+stages:
+  - stage: CI
+    displayName: Build Artifact
+
+    pool:
+      vmImage: ubuntu-latest
+
+    jobs:
+    - job: Build
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '16.19.0'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration production --build-optimizer
+        displayName: 'npm install and build'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact app'
+        inputs:
+          PathtoPublish: dist
+          ArtifactName: documental-artifact
+
+  - stage: CD
+    displayName: Deploy Artifact
+
+    dependsOn: CI
+    
+    pool:
+      name: Development
+    jobs:
+      - job: Publish
+        displayName: Download Build and Deploy
+        steps:
+        - task: DownloadBuildArtifacts@1
+          displayName: 'Download Build Artifacts'
+          inputs:
+            buildType: 'current'
+            artifactName: documental-artifact
+            downloadPath: /home/ubuntu/projects
+            extractTars: false
+        
+        - bash: |
+            echo 'Moving artifact to nginx directory'
+            rm -rf /var/www/html/dev.documental.kaila.co.ao/
+            mv /home/ubuntu/projects/documental-artifact /var/www/html/dev.documental.kaila.co.ao
+          displayName: 'Bash Script - Move Documental Artifact to Nginx'

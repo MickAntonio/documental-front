@@ -1,0 +1,26 @@
+{
+    "inicio":
+    {
+        "titutlo": "Seja bem Vindo"
+    },
+    "comum":
+    {
+        "fechar": "Fechar",
+        "salvar": "Salvar",
+        "pesquisar-por": "Pesquisar por",
+        "remover": "Remover",
+        "cancelar": "Cancelar",
+        "update": "Update"
+    },
+    "modules":
+    {
+        "settings":{
+            "account": {
+                "update": "Update Personal Info",
+                "update-confirmation": "Are you sure you want to update account information?"
+            }
+        }
+    },
+    "mensagem":{
+    }
+}
